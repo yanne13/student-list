@@ -1,0 +1,21 @@
+- hosts: app_vm
+  become: true
+  tasks:
+    - name: Deploy student-nginx 
+      docker_container:
+        name: nginx
+        hostname: nginx
+        image: yanne13/student-nginx
+        state: started
+        ports:
+          - "8080:8080"
+    - name: Deploy student-haproxy
+      docker_container:
+        name: haproxy
+        hostname: haproxy 
+        image: yanne13/student-haproxy
+        state: started
+        links:  
+          - nginx:nginx
+        ports:
+          - "80:80"
