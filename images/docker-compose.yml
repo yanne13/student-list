@@ -1,23 +1,67 @@
-version: '3'
+version: "3.7"
 
 services:
 
-  nginx:
+  # website
 
-    image: nginx-student
+  pozos-website:
+
+    hostname: pozos-website
+
+    image:  nginx-student
+
+    container_name: "pozos-website"
+
+    volumes:
+
+      - ./website:/var/www/html
+
+    environment:
+
+      USERNAME: "toto"
+
+      PASSWORD: "python"
+
+    networks:
+
+      - pozos
 
     ports:
 
-      - "8080:8080"
-
-  haproxy:
-
-    image: haproxy-student
-
-    ports:
-
-      - "80:80"
+      - 8002:80
 
     depends_on:
 
-      - nginx
+      - pozos-api
+
+
+
+  # API
+
+  pozos-api:
+
+    hostname: pozos-api
+
+    image: haproxy-student
+
+    container_name: "pozos-api"
+
+    volumes:
+
+      - ./simple_api/student_age.json:/data/student_age.json
+
+    ports:
+
+      - 4000:5000
+
+    networks:
+
+      - pozos
+
+
+
+networks:
+
+  pozos:
+
+    name: pozos
